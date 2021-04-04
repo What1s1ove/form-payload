@@ -17,9 +17,9 @@ plugins:
 settings:
   import/resolver:
     alias:
-      extensions: ['.js']
+      extensions: ['.ts']
       map:
-        - ['~', './src/js']
+        - ['~', './src']
 
 ignorePatterns:
   - build
@@ -31,6 +31,9 @@ rules:
   curly:
     - error
     - all
+  arrow-parens:
+    - error
+    - always
   '@typescript-eslint/explicit-function-return-type':
     - error
   '@typescript-eslint/no-explicit-any':

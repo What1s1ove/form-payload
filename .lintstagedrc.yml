@@ -1,2 +1,2 @@
-'*': npm run lint:editorconfig && npm run lint:fs
-"*.ts": npm run lint:ts
+'*': npm run lint:fs && npm run lint:editorconfig
+'*.ts': npm run lint:ts

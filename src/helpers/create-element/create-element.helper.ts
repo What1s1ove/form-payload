@@ -1,7 +1,14 @@
+import { ChildElement } from '~/common/types';
+
 const createElement = (
   tagName: string,
-  props?: Partial<HTMLInputElement | HTMLFieldSetElement>,
-  ...children: HTMLElement[]
+  props?: Partial<
+    | HTMLInputElement
+    | HTMLFieldSetElement
+    | HTMLSelectElement
+    | HTMLOptionElement
+  >,
+  ...children: ChildElement[]
 ): HTMLElement => {
   const element = document.createElement(tagName);
 

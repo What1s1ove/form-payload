@@ -1,18 +1,9 @@
 import { screen } from '@testing-library/dom';
 import { BANNED_CONTROL_TYPES } from '~/common/constants';
 import { createElement } from '~/helpers';
-import { ControlType, ElementName } from './common/enums';
-import { getFormValues } from './index';
-
-const createFormElement = (...children: HTMLElement[]): HTMLElement => {
-  return createElement(
-    ElementName.FORM,
-    {
-      name: '',
-    },
-    ...children,
-  );
-};
+import { ControlType, ElementName } from '../src/common/enums';
+import { getFormValues } from '~/index';
+import { createFormElement } from './utils';
 
 describe('getFormValues should work correctly', () => {
   beforeEach(() => {

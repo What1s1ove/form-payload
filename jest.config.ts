@@ -1,14 +1,14 @@
 import { Config } from '@jest/types';
+import { pathsToModuleNameMapper } from 'ts-jest/utils';
+import { compilerOptions } from './tsconfig.json';
 
 const config: Config.InitialOptions = {
-  verbose: true,
+  preset: 'ts-jest',
   setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
-  transform: {
-    '^.+\\.ts?$': 'ts-jest',
-  },
-  moduleNameMapper: {
-    '~/(.*)$': '<rootDir>/src/$1',
-  },
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
+    prefix: '<rootDir>/',
+  }),
+  modulePathIgnorePatterns: ['build'],
 };
 
 export default config;
