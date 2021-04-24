@@ -1,12 +1,11 @@
 import { fireEvent, screen, waitFor } from '@testing-library/dom';
 import { ControlType, ElementName } from '~/common/enums';
-import { createElement } from '~/helpers';
 import { getControlValue } from '~/index';
 import {
+  createElement,
   createLabelElement,
   createOptionsElements,
-  getInputFiles,
-} from './utils';
+} from './helpers';
 
 describe('getFormValues should work correctly', () => {
   beforeEach(() => {
@@ -17,7 +16,7 @@ describe('getFormValues should work correctly', () => {
     const INPUT_FILE_LABEL = 'Upload' as const;
 
     test('should get value from input type file correctly', async () => {
-      const file = getInputFiles(new File(['test-file'], 'test-file'));
+      const file = [new File(['test-file'], 'test-file')];
 
       document.body.append(
         createLabelElement(
@@ -44,10 +43,10 @@ describe('getFormValues should work correctly', () => {
     });
 
     test('should get value from multiple input type file correctly', async () => {
-      const files = getInputFiles(
+      const files = [
         new File(['test-file-1'], 'test-file-1'),
         new File(['test-file-2'], 'test-file-2'),
-      );
+      ];
 
       document.body.append(
         createLabelElement(
@@ -130,8 +129,6 @@ describe('getFormValues should work correctly', () => {
       const controlValue = getControlValue(
         <HTMLSelectElement>screen.getByLabelText(SELECT_LABEL),
       );
-
-      expect(typeof controlValue).toBe('object');
 
       expect(Array.isArray(controlValue)).toBe(true);
 

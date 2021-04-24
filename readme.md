@@ -110,7 +110,7 @@ const SimpleForm = () => {
         </label>
         <label>
           Date
-          <input name="date" type={ControlType.DATE} defaultValue="2021-03-27" />
+          <input name="birthday" type={ControlType.DATE} defaultValue="2021-03-27" />
         </label>
         <button type="submit">Submit</button>
       </form>

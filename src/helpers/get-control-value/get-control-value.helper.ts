@@ -1,8 +1,33 @@
-import { ControlType } from '~/common/enums';
-import { getElementsValues } from '../get-elements-values/get-elements-values.helper';
-import { getMultiSelectValues, getInputFileValue } from './helpers';
+import { ControlType, ErrorMessage } from '~/common/enums';
+import { CustomRecord } from '~/common/types';
+import { FormPayloadError } from '~/exceptions';
+import {
+  checkIsReferToAnotherNode,
+  getAllowedElements,
+  getMultiSelectValues,
+  getInputFileValue,
+} from './helpers';
 
-const getControlValue = (controlNode: Element): unknown => {
+const getElementsValues = (controlNodeElements: Element[]): CustomRecord => {
+  const elements = <HTMLInputElement[]>(
+    getAllowedElements(Array.from(controlNodeElements))
+  );
+
+  return elements.reduce<CustomRecord>((acc, element, _idx, arr) => {
+    const isReferToAnotherNode = checkIsReferToAnotherNode(element, ...arr);
+
+    if (isReferToAnotherNode) {
+      return acc;
+    }
+
+    return {
+      ...acc,
+      [element.name]: getControlValue(element),
+    };
+  }, {});
+};
+
+const getControlValue = (controlNode: Element): unknown | never => {
   switch ((<HTMLInputElement>controlNode).type) {
     case ControlType.COLOR:
     case ControlType.EMAIL:
@@ -46,6 +71,10 @@ const getControlValue = (controlNode: Element): unknown => {
       );
     }
   }
+
+  throw new FormPayloadError({
+    message: ErrorMessage.UNKNOWN_CONTROL_TYPE,
+  });
 };
 
-export { getControlValue };
+export { getElementsValues, getControlValue };
