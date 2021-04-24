@@ -1,7 +1,7 @@
 {
   "name": "form-payload",
   "description": "Gets form-payload via form.elements",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Vladyslav Zubko <zubko.2007@gmail.com>",
   "homepage": "https://github.com/what1s1ove/form-payload",
   "repository": {
