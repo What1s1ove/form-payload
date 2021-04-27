@@ -8,8 +8,8 @@ on:
 
 jobs:
   notify:
+    name: Notify
     runs-on: ubuntu-latest
-
     steps:
       - name: Send notification
         uses: appleboy/telegram-action@master

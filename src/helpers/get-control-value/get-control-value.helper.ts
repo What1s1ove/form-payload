@@ -1,5 +1,9 @@
 import { ControlType, ErrorMessage } from '~/common/enums';
-import { CustomRecord } from '~/common/types';
+import {
+  CustomObject,
+  ControlElement,
+  ControlCollection,
+} from '~/common/types';
 import { FormPayloadError } from '~/exceptions';
 import {
   checkIsReferToAnotherNode,
@@ -8,13 +12,17 @@ import {
   getInputFileValue,
 } from './helpers';
 
-const getElementsValues = (controlNodeElements: Element[]): CustomRecord => {
-  const elements = <HTMLInputElement[]>(
-    getAllowedElements(Array.from(controlNodeElements))
+const getElementsValues = (
+  controlElements: ControlCollection,
+): CustomObject => {
+  const allowedElements = getAllowedElements(
+    <ControlElement[]>Array.from(controlElements),
   );
-
-  return elements.reduce<CustomRecord>((acc, element, _idx, arr) => {
-    const isReferToAnotherNode = checkIsReferToAnotherNode(element, ...arr);
+  return allowedElements.reduce<CustomObject>((acc, element) => {
+    const isReferToAnotherNode = checkIsReferToAnotherNode(
+      element,
+      ...allowedElements,
+    );
 
     if (isReferToAnotherNode) {
       return acc;
@@ -27,8 +35,16 @@ const getElementsValues = (controlNodeElements: Element[]): CustomRecord => {
   }, {});
 };
 
-const getControlValue = (controlNode: Element): unknown | never => {
-  switch ((<HTMLInputElement>controlNode).type) {
+const getControlValue = (controlNode: ControlElement): unknown | never => {
+  switch (controlNode.type) {
+    case ControlType.BUTTON:
+    case ControlType.IMAGE:
+    case ControlType.RESET:
+    case ControlType.SUBMIT: {
+      throw new FormPayloadError({
+        message: `${ErrorMessage.BANNED_TYPE}${controlNode.type}`,
+      });
+    }
     case ControlType.COLOR:
     case ControlType.EMAIL:
     case ControlType.HIDDEN:
@@ -37,9 +53,9 @@ const getControlValue = (controlNode: Element): unknown | never => {
     case ControlType.SEARCH:
     case ControlType.TEL:
     case ControlType.TEXT:
-    case ControlType.TEXTAREA:
     case ControlType.URL:
     case ControlType.OUTPUT:
+    case ControlType.TEXTAREA:
     case ControlType.SELECT_ONE: {
       return (<HTMLInputElement | HTMLSelectElement>controlNode).value;
     }
@@ -64,11 +80,7 @@ const getControlValue = (controlNode: Element): unknown | never => {
       return getInputFileValue(<HTMLInputElement>controlNode);
     }
     case ControlType.FIELDSET: {
-      return getElementsValues(
-        <HTMLInputElement[]>(
-          Array.from((<HTMLFieldSetElement>controlNode).elements)
-        ),
-      );
+      return getElementsValues((<HTMLFieldSetElement>controlNode).elements);
     }
   }
 

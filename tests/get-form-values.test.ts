@@ -39,11 +39,11 @@ describe('getFormValues should work correctly', () => {
   });
 
   test('should return the correct object with values', () => {
-    const FormPayloadKey = {
+    const FormPayloadKey = <const>{
       NAME: 'name',
       FRIENDS_COUNT: 'friendsCount',
       BIRTHDAY: 'birthday',
-    } as const;
+    };
 
     const formPayload = {
       [FormPayloadKey.NAME]: 'Brad',
@@ -79,13 +79,13 @@ describe('getFormValues should work correctly', () => {
   });
 
   test('should return the correct nested object with values', () => {
-    const FormPayloadKey = {
+    const FormPayloadKey = <const>{
       NAME: 'name',
       FRIENDS_COUNT: 'friendsCount',
       BIRTHDAY: 'birthday',
       MAIN_FRIEND: 'mainFriend',
       MAIN_FRIEND_NAME: 'friendName',
-    } as const;
+    };
 
     const formPayload = {
       [FormPayloadKey.NAME]: 'David',

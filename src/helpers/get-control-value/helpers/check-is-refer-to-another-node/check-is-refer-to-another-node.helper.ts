@@ -1,12 +1,12 @@
+import { ControlElement } from '~/common/types';
+
 const checkIsReferToAnotherNode = (
-  currentNode: HTMLInputElement,
-  ...checkNodes: Element[]
+  currentNode: ControlElement,
+  ...checkNodes: ControlElement[]
 ): boolean => {
   return checkNodes.some((checkNode) => {
     return Boolean(
-      (<HTMLFieldSetElement>checkNode).elements?.namedItem(
-        (<HTMLInputElement>currentNode).name,
-      ),
+      (<HTMLFieldSetElement>checkNode).elements?.namedItem(currentNode.name),
     );
   });
 };

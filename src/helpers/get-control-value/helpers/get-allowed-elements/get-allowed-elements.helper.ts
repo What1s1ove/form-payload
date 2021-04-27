@@ -1,22 +1,23 @@
 import { BANNED_CONTROL_TYPES } from '~/common/constants';
+import { ControlElement } from '~/common/types';
 
-const checkControlFnMap = {
-  checkHasControlName(element: HTMLInputElement) {
+const checkControlFnMap = <const>{
+  checkHasControlName(element: ControlElement) {
     return Boolean(element.name);
   },
-  checkIsAllowedControl(element: HTMLInputElement): boolean {
+  checkIsAllowedControl(element: ControlElement): boolean {
     const isBannedType = BANNED_CONTROL_TYPES.some((type) => {
       return type === element.type;
     });
 
     return !isBannedType;
   },
-} as const;
+};
 
-const getAllowedElements = (elements: Element[]): Element[] => {
+const getAllowedElements = (elements: ControlElement[]): ControlElement[] => {
   return elements.filter((element) => {
     return Object.values(checkControlFnMap).every((checkFunction) => {
-      return checkFunction(<HTMLInputElement>element);
+      return checkFunction(element);
     });
   });
 };

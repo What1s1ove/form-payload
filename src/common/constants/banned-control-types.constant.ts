@@ -1,9 +1,10 @@
 import { ControlType } from '~/common/enums';
 
-const BANNED_CONTROL_TYPES = [
+const BANNED_CONTROL_TYPES = <const>[
   ControlType.BUTTON,
+  ControlType.IMAGE,
   ControlType.RESET,
   ControlType.SUBMIT,
-] as const;
+];
 
 export { BANNED_CONTROL_TYPES };

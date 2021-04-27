@@ -1,11 +1,13 @@
-const ControlType = {
+const ControlType = <const>{
   BUTTON: 'button',
   CHECKBOX: 'checkbox',
   COLOR: 'color',
   DATE: 'date',
   DATETIME_LOCAL: 'datetime-local',
   EMAIL: 'email',
+  FILE: 'file',
   HIDDEN: 'hidden',
+  IMAGE: 'image',
   MONTH: 'month',
   NUMBER: 'number',
   PASSWORD: 'password',
@@ -24,7 +26,6 @@ const ControlType = {
   OUTPUT: 'output',
   SELECT_ONE: 'select-one',
   SELECT_MULTIPLE: 'select-multiple',
-  FILE: 'file',
-} as const;
+};
 
 export { ControlType };

@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/dom';
-import { ControlType, ElementName } from '~/common/enums';
-import { getControlValue } from '~/index';
+import { ControlType, ElementName, ErrorMessage } from '~/common/enums';
+import { FormPayloadError, getControlValue } from '~/index';
 import {
   createElement,
   createLabelElement,
@@ -12,8 +12,39 @@ describe('getFormValues should work correctly', () => {
     document.body.innerHTML = '';
   });
 
-  describe('getFormValues should work correctly with input', () => {
-    const INPUT_FILE_LABEL = 'Upload' as const;
+  describe('should work correctly with texts inputs', () => {
+    test.each`
+      type                    | value
+      ${ControlType.COLOR}    | ${'#999999'}
+      ${ControlType.EMAIL}    | ${'test@mail.com'}
+      ${ControlType.HIDDEN}   | ${'metrics'}
+      ${ControlType.PASSWORD} | ${'top-secret'}
+      ${ControlType.RADIO}    | ${'color-1'}
+      ${ControlType.SEARCH}   | ${'apples'}
+      ${ControlType.TEL}      | ${'10000000000'}
+      ${ControlType.TEXT}     | ${'Name'}
+      ${ControlType.URL}      | ${'form-payload.com'}
+      ${ControlType.OUTPUT}   | ${'empty'}
+    `('should get value from input type $type correctly', ({ type, value }) => {
+      document.body.append(
+        createElement(ElementName.INPUT, {
+          name: type,
+          type: type,
+          value,
+        }),
+      );
+
+      const control = <HTMLInputElement>screen.getByDisplayValue(value);
+      const controlValue = getControlValue(control);
+
+      expect(typeof controlValue).toBe('string');
+
+      expect(controlValue).toBe(value);
+    });
+  });
+
+  describe('should work correctly with file input', () => {
+    const INPUT_FILE_LABEL = 'Upload';
 
     test('should get value from input type file correctly', async () => {
       const file = [new File(['test-file'], 'test-file')];
@@ -39,7 +70,7 @@ describe('getFormValues should work correctly', () => {
         }),
       );
 
-      expect(getControlValue(control) instanceof File).toBe(true);
+      expect(getControlValue(control)).toBeInstanceOf(File);
     });
 
     test('should get value from multiple input type file correctly', async () => {
@@ -74,18 +105,18 @@ describe('getFormValues should work correctly', () => {
 
       expect(controlValue.every((file) => file instanceof File)).toBe(true);
 
-      expect(controlValue.length).toBe(files.length);
+      expect(controlValue).toHaveLength(controlValue.length);
     });
   });
 
-  describe('getFormValues should work correctly with select', () => {
-    const SELECT_LABEL = 'Colors' as const;
+  describe('should work correctly with select', () => {
+    const SELECT_LABEL = 'Colors';
 
-    const Color = {
+    const Color = <const>{
       RED: 'red',
       BLUE: 'blue',
       YELLOW: 'yellow',
-    } as const;
+    };
 
     const options = Object.values(Color);
 
@@ -132,7 +163,55 @@ describe('getFormValues should work correctly', () => {
 
       expect(Array.isArray(controlValue)).toBe(true);
 
+      expect(controlValue).toHaveLength(selectedValues.length);
+
       expect(controlValue).toEqual(selectedValues);
+    });
+  });
+
+  describe('should work correctly with an unexpected control type', () => {
+    const UNKNOWN_CONTROL_LABEL = 'Unknown';
+
+    test.each`
+      type
+      ${ControlType.BUTTON}
+      ${ControlType.IMAGE}
+      ${ControlType.RESET}
+      ${ControlType.SUBMIT}
+    `(
+      'should throw FormPayloadError exception for banned $type input type',
+      ({ type }) => {
+        document.body.append(
+          createLabelElement(
+            UNKNOWN_CONTROL_LABEL,
+            createElement(ElementName.INPUT, {
+              type,
+            }),
+          ),
+        );
+
+        const control = <HTMLInputElement>(
+          screen.getByLabelText(UNKNOWN_CONTROL_LABEL)
+        );
+
+        expect(() => getControlValue(control)).toThrowError(FormPayloadError);
+
+        expect(() => getControlValue(control)).toThrowError(
+          `${ErrorMessage.BANNED_TYPE}${type}`,
+        );
+      },
+    );
+
+    test('should throw FormPayloadError with unknown input type', () => {
+      const control = <HTMLInputElement>{
+        type: 'unknown-type',
+      };
+
+      expect(() => getControlValue(control)).toThrowError(FormPayloadError);
+
+      expect(() => getControlValue(control)).toThrowError(
+        ErrorMessage.UNKNOWN_CONTROL_TYPE,
+      );
     });
   });
 });

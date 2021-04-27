@@ -1,1 +1,1 @@
-export * from './custom-record.type';
+export * from './custom-object.type';

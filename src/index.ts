@@ -1,10 +1,16 @@
 import { getElementsValues, getControlValue } from '~/helpers';
 import { FormPayloadError } from '~/exceptions';
 import { ControlType, CustomExceptionName, ErrorMessage } from '~/common/enums';
-import { CustomRecord } from '~/common/types';
+import {
+  CustomObject,
+  ControlElement,
+  ControlCollection,
+} from '~/common/types';
 
-const getFormValues = <T = CustomRecord>(formNode: HTMLFormElement): T => {
-  return <T>getElementsValues(Array.from(formNode.elements));
+const getFormValues = <T = CustomObject>(
+  nodeWithElements: HTMLFormElement | HTMLFieldSetElement,
+): T => {
+  return <T>getElementsValues(nodeWithElements.elements);
 };
 
 export {
@@ -15,3 +21,5 @@ export {
   getControlValue,
   getFormValues,
 };
+
+export type { ControlElement, ControlCollection };

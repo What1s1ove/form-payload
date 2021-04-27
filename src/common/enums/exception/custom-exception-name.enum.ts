@@ -1,5 +1,5 @@
-const CustomExceptionName = {
+const CustomExceptionName = <const>{
   FORM_PAYLOAD_ERROR: 'formPayloadError',
-} as const;
+};
 
 export { CustomExceptionName };
